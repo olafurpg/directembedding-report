@@ -1,0 +1,64 @@
+\section{Directembedding} % (fold)
+\label{sec:Directembedding}
+The architecture of the Directembedding library went through a major overhaul in this project.
+The reification has been extended with new annotations and new capabilities such as language virtualization.
+The reification is now highly customizable by the DSL author.
+The library also aims to provide useful error messages where possible.
+
+\subsection{Architecture} % (fold)
+\label{sub:Architecture}
+Figure~\ref{fig:pipeline} shows the new architechure of Directembedding.
+PreProcessing is an optional pass in the shallow embedding where the DSL author can transform the program in any way necessary before reification.
+PreProcessing requires knowledge of the Scala reflection API.\
+DSLVirtualization reifies standard Scala language features according the configuration provided by the DSL author.
+This pass happens in the shallow embedding.
+ReificationTransformation is the major component of Directembedding and transforms the shallow embedding into the deep embedding.
+In this pass, the attached metadata to the shallow embedding is used to reify the program into the DSL authors IR.\
+PostProcessing is an optional pass through the deep embedding where the DSL author can transform the program in any way necessary before the program is passed back to the user.
+
+\begin{figure}
+    \centering
+    \begin{tikzpicture}
+        [node distance=.5cm,
+        start chain=going below,]
+        \node[punktchain, join] (preprocess)  {PreProcessing};
+        \node[punktchain, join] (virt)        {DSLVirtualization};
+        \node[punktchain, join] (embed)       {ReificationTransformation};
+        \node[punktchain, join] (postprocess) {PostProcessing};
+    \end{tikzpicture}
+    \caption{The Directembedding transformation pipeline.}\label{fig:pipeline}
+\end{figure}
+
+% subsection Architecture (end)
+\subsection{Language virtualization} % (fold)
+\label{sub:LanguageVirtualization}
+Language virtualization is the process of converting standard language features into method calls.
+Such language features include if-then-else statements, loops, and variable assignments.
+It is generally not possible to override the semantics such features in a programming language.
+
+Directembedding uses the language virtualization provided by the Yin-Yang~\autocite{jovanovic_yin-yang:_2014} framework.
+
+% subsection Language virtualization (end)
+
+\subsection{Overriding predefined and third-party types} % (fold)
+\label{sub:Overridingpredefinedandthirdpartytypes}
+
+% subsection Overriding predefined and third-party types (end)
+
+\subsection{Configurable reification} % (fold)
+\label{sub:Configurablereification}
+
+% subsection Configurable reification (end)
+
+\subsection{Improved error messages} % (fold)
+\label{sub:Improvederrormessages}
+
+% subsection Improved error messages (end)
+
+\begin{itemize}
+    \item Explain \texttt{reifyAs} annotations, provide examples.
+    \item Explain pipeline.
+\end{itemize}
+
+
+% section Directembedding (end)
