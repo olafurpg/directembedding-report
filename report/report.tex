@@ -64,7 +64,7 @@
 
 \begin{sloppypar}
     \begin{abstract}
-        Authors of embedded domain-specific languages (DSLs) commonly struggle to find the right balance between the capa\-bility and usability of their DSL.\
+        Authors of embedded domain-specific languages (EDSLs) commonly struggle to find the right balance between the capa\-bility and usability of their DSL.\
         On one hand, deeply embedded DSLs give great power to the DSL author but have a steep learning curve for end users.
         On the other hand, shallowly embedded DSLs are more limiting for the DSL author but offer a more familiar interface to the end users that enables them to quickly become productive with the DSL.\
 
@@ -74,6 +74,8 @@
         Leveraging Directembedding features, slick-direct is able to support a large feature set of Slick in under 300 lines of code.
     \end{abstract}
 \end{sloppypar}
+
+\tableofcontents
 
 % TODO: Make slick sexy
 \section{Introduction} % (fold)
@@ -85,7 +87,7 @@ One common use case for DSLs is to enable novice programmers and experts in fiel
 One method to implement DSLs is to embed them inside a host language.
 This has the benefit that the DSL can leverage the facilities of the host language.
 The downside is that an embedded DSL has less flexibility to give arbitrary semantics to a given program.
-An embedded DSL (EDSL) must obey the host language's syntax and predefined behavior.
+An embedded DSL must obey the host language's syntax and predefined behavior.
 EDSLs largely fall into two categories:
 \begin{itemize}
     \item \emph{Shallowly embedded DSLs} offer an interface on top of values that are directly provided by the host language.

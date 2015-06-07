@@ -10,14 +10,18 @@ For more details on how Directembedding works please consult the project's Githu
 
 \subsection{Architecture} % (fold)
 \label{sub:Architecture}
-Figure~\ref{fig:pipeline} shows the new architechure of Directembedding.
+Figure~\ref{fig:pipeline} shows the new architecture of Directembedding.
 PreProcessing is an optional pass in the shallow embedding where the DSL author can transform the program in any way necessary before reification.
 PreProcessing requires knowledge of the Scala reflection API.\
-DSLVirtualization reifies standard Scala language features according the configuration provided by the DSL author.
+The DSLVirtualization pass performs the language virtualization explained in Section~\ref{sub:LanguageVirtualization}.
 This pass happens in the shallow embedding.
-ReificationTransformation is the major component of Directembedding and transforms the shallow embedding into the deep embedding.
+ReificationTransformation is the major component of Directembedding and lifts the shallow embedding into the deep embedding.
 In this pass, the attached metadata to the shallow embedding is used to reify the program into the DSL author's IR.\
 PostProcessing is an optional pass through the deep embedding where the DSL author can transform the program in any way necessary before the program is passed back to the user.
+
+% A valid DSL program must type-check in three stages of the pipeline: before PreProcessing, during DSLVirtualization and after PostProcessing.
+% A well designed DSL should guarantee that a compilation error only occurs before PreProcessing or
+% program compiles in the before 
 
 The entry point to using Directembedding is now \texttt{DETransformer}.
 The design of the DETransformer is inspired by the \texttt{YYTransformer} in Yin-Yang~\autocite{jovanovic_yin-yang:_2014}.
@@ -59,7 +63,7 @@ Third-party types can be any types in a third-party library supported by the DSL
     Reification for overriden types works the same way as reification with any other types.
     The \texttt{typeMap} argument to \texttt{DETransformer} tells Directembedding where to to look for reification annotations.
     If Directembedding does not find metadata to an invoked symbol, Directembedding will look for annotations on types in the \texttt{typeMap}.
-    This search on types and finding matching symbols is currently implemented with a naïve way, and could be improved in future implementations.
+    This search on types and finding matching symbols is currently implemented in a naïve way, and could be improved in future implementations.
     \texttt{TypeOverridingSpec} provides 6 examples of how to use the type overriding feature in Directembedding.
 \end{sloppypar}
 
