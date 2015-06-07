@@ -24,6 +24,10 @@
 \usepackage{paralist}
 \usepackage{biblatex}
 \usepackage{xcolor}
+\usepackage{caption}
+\DeclareCaptionFont{white}{\color{white}}
+\DeclareCaptionFormat{listing}{\colorbox[cmyk]{0.43, 0.35, 0.35,0.01}{\parbox{\textwidth}{\hspace{15pt}#1#2#3} } }
+\captionsetup[lstlisting]{format=listing, labelfont=white, textfont=white, singlelinecheck=false, margin=0pt, font={bf,footnotesize} }
 
 \addbibresource{project.bib}
 
@@ -144,7 +148,6 @@ The main contributions presented in this report are the following:
 % section Introduction (end)
 \input{sections/directembedding}
 \input{sections/slick-direct}
-\input{sections/related-work}
 \input{sections/todo}
 
 \printbibliography{}

@@ -1,16 +1,52 @@
 \section{Case study: slick-direct} % (fold)
 \label{sec:CaseStudy}
-We evaluated Directembedding by implementing a front-end, \emph{slick-direct}, for the widely adopted Scala library \emph{Slick}.
+We evaluated Directembedding by implementing a front-end, \emph{slick-direct}, for the Scala library \emph{Slick}.
+We chose Slick for mostly two reasons.
+Firstly, Slick is a widely used library in the industry.
+Secondly, there have been made two previous attempts to provide a user-friendly front-end on top of the Slick lifted embedding.
+
+Slick is a popular Scala library.
+Slick is the recommended relational mapper by Typesafe for their well known Play framework.
 Professional Scala consultancies such as \href{http://underscore.io}{underscore.io} offer public and private training on Slick and underscore.io even recently released a book about the library\footnote{http://underscore.io/training/courses/essential-slick/}.
 The hefty prices on the private training indicates that there is commercial interest in using Slick.
 The fact that the book is close to 300 pages may also indicate that the library has a steep learning curve.
 
-
+\subsection{Related work} % (fold)
+\label{sub:Relatedwork}
+There have been made two attempts to provide a simplified Query API to Slick using macros.
 \begin{itemize}
-    \item Compare type signatures in \texttt{slick.direct} and \texttt{slick.lifted}, see below.
+    \item The first attempt was made by the Slick team and resulted in a direct embedding API which has now been deprecated and will be removed in the upcoming 3.1 release of Slick.
+        The approach taken with the direct embedding API differs greatly from our approach in slick-direct.
+        The Queryable API from the direct embedding implemented a separate macro for each method and produced values of type \texttt{ast.Node}, obviating the need for the \texttt{lifted.Query}.
+        Slick-direct, on the other hand, implements one macro logic for all invocations on our Query API and produces values of type \texttt{lifted.Query}.
+        Slick-direct does not implement any query logic, it delegates it to \texttt{lifted.Query}.
+    \item The second attempt was a made by Amir Shaikhha~\autocite{shaikhha_embedded_2014} using the Yin-Yang Framework~\autocite{jovanovic_yin-yang:_2014}.
+        The approach taken in this second attempt is similar to the approach taken in our case in many ways.
+        The library implements one macro to reify values in a shallow Query API.\
+        However, this second attempt produced values in a shadow embedding that operates on values of type \texttt{lifted.Query} at runtime.
+        The main difference between our case study and this attempt is that Directembedding obviates the need for the shadow embedding by transforming in one step the values in the shallow embedding into the deep embedding.
 \end{itemize}
+Due to time constraint, we implemented only a subset of the methods supported in the previous two attempts.
+Nevertheless, we consider that we picked the methods that introduced the most interesting challenges for our purposes.
+We believe that the remaining methods that are not supported in our case study could be added to our API with little extra effort.
 
-\lstinputlisting{code/map.scala}
-\lstinputlisting{code/filter.scala}
-\lstinputlisting{code/join.scala}
+\subsection{Comparison with lifted.Query} % (fold)
+\label{sub:Comparisonwithlifted.Query}
+Slick-direct currently supports 6 categories of queries.
+Each of these categories has a test suite showing comparison of the slick-direct API compared to the lifted embedding in the Slick library.
+Herein, we highlight three major differences between the two APIs.
+In all examples, assume the type of \texttt{this} is \texttt{lifted.Query[E, T, \_]} for \texttt{direct.Query[T, \_]}, respectively.
+\lstinputlisting[caption=Map API]{code/map.scala}
+In order to guarantee that \texttt{f} produces a value that can be persisted into a database, \texttt{lifted.Query} adds an implicit shape parameter on the type of \texttt{F}.
+Slick-direct eliminates the need for this shape parameter by not supporting selection of more than one column.
+
+\lstinputlisting[caption=Filter API]{code/filter.scala}
+In order to guarantee that \texttt{f} produces a value that can be a boolean condition, \texttt{lifted.Query} adds an implicit \texttt{CanBeQueryCondition} parameter on the type of \texttt{T}.
+Slick-direct eliminates the need for this implicit parameter by forcing the method to be of type \texttt{T => Boolean}.
+The issue with this elimination is that query conditions on wrapped column types such as \texttt{Option[Boolean]}cannot be supported.
+
+\lstinputlisting[caption=Join API]{code/join.scala}
+This example may be a bit unfair against \texttt{lifted.Query}, but shows that type signatures in the lifted embedding can be incredibly complicated.
+The type signature of the equivalent method in slick-direct is undeniably more user-friendly.
+
 % section Evaluation: slick-direct (end)
