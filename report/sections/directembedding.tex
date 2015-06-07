@@ -5,6 +5,9 @@ The reification has been extended with new annotations and new capabilities such
 The reification is now highly customizable by the DSL author.
 The library also aims to provide useful error messages where possible.
 
+The following sections explain the improvements that have been made to the Directembedding library in this project.
+For more details on how Directembedding works please consult the project's Github site\footnote{\href{https://github.com/directembedding/directembedding}{https://github.com/directembedding/directembedding}}.
+
 \subsection{Architecture} % (fold)
 \label{sub:Architecture}
 Figure~\ref{fig:pipeline} shows the new architechure of Directembedding.
@@ -13,8 +16,12 @@ PreProcessing requires knowledge of the Scala reflection API.\
 DSLVirtualization reifies standard Scala language features according the configuration provided by the DSL author.
 This pass happens in the shallow embedding.
 ReificationTransformation is the major component of Directembedding and transforms the shallow embedding into the deep embedding.
-In this pass, the attached metadata to the shallow embedding is used to reify the program into the DSL authors IR.\
+In this pass, the attached metadata to the shallow embedding is used to reify the program into the DSL author's IR.\
 PostProcessing is an optional pass through the deep embedding where the DSL author can transform the program in any way necessary before the program is passed back to the user.
+
+The entry point to using Directembedding is now \texttt{DETransformer}.
+The design of the DETransformer is inspired by the \texttt{YYTransformer} in Yin-Yang~\autocite{jovanovic_yin-yang:_2014}.
+An example Directembedding DSL is provided the \texttt{example} package object.
 
 \begin{figure}
     \centering
@@ -32,16 +39,27 @@ PostProcessing is an optional pass through the deep embedding where the DSL auth
 % subsection Architecture (end)
 \subsection{Language virtualization} % (fold)
 \label{sub:LanguageVirtualization}
-Language virtualization is the process of converting standard language features into method calls.
+Language virtualization is the process of converting standard language features into method calls, in order to give them arbitrary semantics.
 Such language features include if-then-else statements, loops, and variable assignments.
-It is generally not possible to override the semantics such features in a programming language.
+It is not possible to override the semantics of such statements in Scala without macros.
 
 Directembedding uses the language virtualization provided by the Yin-Yang~\autocite{jovanovic_yin-yang:_2014} framework.
-
+This transformation happens in the DSLVirtualization pass.
+The DSL author is able to configure which language features to override through the \texttt{DslConfig} trait.
+The \texttt{LanguageVirtualizationSpec} shows 43 examples of how to use the language virtualization feature in Directembedding.
 % subsection Language virtualization (end)
 
 \subsection{Overriding predefined and third-party types} % (fold)
 \label{sub:Overridingpredefinedandthirdpartytypes}
+Directembedding supports the ability to override the behavior of predefined and third-party types.
+Predefined types are types provided by standard Scala libraries, such as \texttt{Int} and \texttt{String}.
+Third-party types can be any types in a third-party library supported by the DSL.\
+
+\begin{sloppypar}
+    Overriding behaviour of predefined and third-party types in Directembedding is accomplished the same way that reification is configured with any other types.
+    The \texttt{typeMap} argument to \texttt{DETransformer} tells Directembedding where to to look for reification annotations.
+    For example, the DSL author can use \texttt{typeMap} to indicate that reificaiton annotations for \texttt{scala.Int} should be found under a custom \texttt{DslInt}.
+\end{sloppypar}
 
 % subsection Overriding predefined and third-party types (end)
 
