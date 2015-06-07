@@ -63,24 +63,23 @@
 \include{sections/cover}
 
 \begin{sloppypar}
-    
-\begin{abstract}
-    Authors of embedded domain specific languages (DSLs) commonly struggle to find the right balance between the capa\-bility and usability of their DSL.\
-    On one hand, deeply embedded DSLs give great power to the DSL author but have a steep learning curve for end users.
-    On the other hand, shallowly embedded DSLs are more limiting for the DSL author but offer a more familiar interface to the end users that enables them to quickly become productive with the DSL.\
+    \begin{abstract}
+        Authors of embedded domain-specific languages (DSLs) commonly struggle to find the right balance between the capa\-bility and usability of their DSL.\
+        On one hand, deeply embedded DSLs give great power to the DSL author but have a steep learning curve for end users.
+        On the other hand, shallowly embedded DSLs are more limiting for the DSL author but offer a more familiar interface to the end users that enables them to quickly become productive with the DSL.\
 
-    This report presents work on \emph{Directembedding}, a Scala library to implement a thin user-friendly layer on top of an existing deeply embedded DSL\footnote{Note. This work builds on a previous semester project on the Directembedding library}.\
-    The library accomplishes this using annotations and macros, and requires little to no knowledge of the Scala reflection API.\
-    We used Directembedding to implement \emph{slick-direct}, a front-end for the functional relational mapping library \emph{Slick}.
-    Leveraging Directembedding features, slick-direct is able to support a large feature set of Slick in under 300 lines of code.
-\end{abstract}
+        This report presents work on \emph{Directembedding}, a Scala library to implement a thin user-friendly layer on top of an existing deeply embedded DSL\footnote{Note. This work builds on a previous semester project on the Directembedding library}.\
+        The library accomplishes this using annotations and macros, and requires little to no knowledge of the Scala reflection API.\
+        We used Directembedding to implement \emph{slick-direct}, a front-end for the functional relational mapping library \emph{Slick}.
+        Leveraging Directembedding features, slick-direct is able to support a large feature set of Slick in under 300 lines of code.
+    \end{abstract}
 \end{sloppypar}
 
 % TODO: Make slick sexy
 \section{Introduction} % (fold)
 \label{sec:Introduction}
-Domain specific languages (DSLs) provide a simple and high-level way for programmers to accomplish a domain specific task.
-DSLs differ from general purpose programming languages in the sense that they relieve the programmer from dealing with the low-level details of a problem at the price of restricted capabilities.
+Domain-specific languages (DSLs) provide a simple and high-level way for programmers to accomplish a domain-specific task.
+DSLs differ from general purpose programming languages in the sense that they enable the programmers to think at a higher level of abstraction at the price of having restricted capabilities.
 One common use case for DSLs is to enable novice programmers and experts in fields outside of software development to become productive programmers.
 
 One method to implement DSLs is to embed them inside a host language.
@@ -91,25 +90,25 @@ EDSLs largely fall into two categories:
 \begin{itemize}
     \item \emph{Shallowly embedded DSLs} offer an interface on top of values that are directly provided by the host language.
         In Scala, these are values such as \texttt{Int} and \texttt{String}.
-        The benefit to shallow EDSLs is that they have a small learning curve for end users.
+        The benefit of shallow EDSLs is that they have a small learning curve for end users.
         The interface is familiar to programmers who already have some experience with the host language.
         The downside to shallow EDSLs is that they are inconvenient for the DSL author.
         The values in the DSL may have predefined behavior by the host language or third-party libraries.
-        The DSL author must work around these limitations in order to give domain specific meaning to the programs in her DSL.
+        The DSL author must work around these limitations in order to give domain-specific meaning to the programs in her DSL.
 
-    \item \emph{Deeply embedded DSLs} offer an interface through an intermediate representation (IR), designed by the DSL author.
+    \item \emph{Deeply embedded DSLs} offer an interface on top of host-language data-structures, which we refer to as an intermediate representation (IR).
         In Scala, this could be a type such as \texttt{Column[Int]} or \texttt{Column[String]} for a database DSL.\
-        The benefit to deep EDSLs is that they are convenient for the DSL author.
+        The benefit of deep EDSLs is that they are convenient for the DSL author.
         The DSL author has full control over the IR, and can therefore give any meaning to programs which invoke operations on the IR.\
         The downside to deep EDSLs is that they can have a steep learning curve for end users.
         The types in the IR and their behavior may be unfamiliar to the programmers even though they may have some experience with the host language.
         In a way, deep EDSLs are not too different from ordinary libraries in a general purpose programming language.
 \end{itemize}
-There is a clear trade-off between the two categories: end users like shallow EDSLs while DSL authors like deep EDSLs.
+There is a clear struggle between DSL users and authors: the users prefer shallow EDSLs while the authors prefer deep EDSLs.
 Directembedding aims to please both parties.
-The DSL author can safely make her DSL deeply embedded and then use Directembedding to provide a shallow EDSL-like interface for end users.
+The DSL author can conveniently create her deeply embedded DSL and then use Directembedding to provide a shallow EDSL-like interface for end users.
 
-The main contributions of the work presented in this report are the following:
+The main contributions presented in this report are the following:
 \begin{itemize}
     \item Extend previous work on the Directembedding library by adding the possibility to
         \begin{inparaenum}[1)]
@@ -117,7 +116,7 @@ The main contributions of the work presented in this report are the following:
         \item give arbitrary semantics to many standard Scala features
         \item configure the reification of DSL programs.
         \end{inparaenum}
-        Moreover, much work has been put to improve the error messages generated by the library.
+        Moreover, much work has been put into improving the error messages generated by the library.
         This work is explained in Section~\ref{sec:Directembedding}.
     \item Do the first case study on the practical use of the Directembedding library.
         In under two weeks, we implemented \emph{slick-direct}: a front-end for the \texttt{Query} API in the functional relational mapping library Slick.

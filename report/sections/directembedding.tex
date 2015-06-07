@@ -56,9 +56,11 @@ Predefined types are types provided by standard Scala libraries, such as \texttt
 Third-party types can be any types in a third-party library supported by the DSL.\
 
 \begin{sloppypar}
-    Overriding behaviour of predefined and third-party types in Directembedding is accomplished the same way that reification is configured with any other types.
+    Reification for overriden types works the same way as reification with any other types.
     The \texttt{typeMap} argument to \texttt{DETransformer} tells Directembedding where to to look for reification annotations.
-    For example, the DSL author can use \texttt{typeMap} to indicate that reificaiton annotations for \texttt{scala.Int} should be found under a custom \texttt{DslInt}.
+    If Directembedding does not find metadata to an invoked symbol, Directembedding will look for annotations on types in the \texttt{typeMap}.
+    This search on types and finding matching symbols is currently implemented with a naïve way, and could be improved in future implementations.
+    \texttt{TypeOverridingSpec} provides 6 examples of how to use the type overriding feature in Directembedding.
 \end{sloppypar}
 
 % subsection Overriding predefined and third-party types (end)
