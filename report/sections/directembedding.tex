@@ -15,13 +15,13 @@ PreProcessing is an optional pass in the shallow embedding where the DSL author 
 PreProcessing requires knowledge of the Scala reflection API.\
 The DSLVirtualization pass performs the language virtualization explained in Section~\ref{sub:LanguageVirtualization}.
 This pass happens in the shallow embedding.
-ReificationTransformation is the major component of Directembedding and lifts the shallow embedding into the deep embedding.
-In this pass, the attached metadata to the shallow embedding is used to reify the program into the DSL author's IR.\
-PostProcessing is an optional pass through the deep embedding where the DSL author can transform the program in any way necessary before the program is passed back to the user.
+\texttt{ReificationTransformation} is the major component of Directembedding and lifts the shallow embedding into the deep embedding.
+In this pass, the metadata attached to the shallow embedding is used to reify the program into the DSL author's IR.\
+\texttt{PostProcessing} is an optional pass through the deep embedding where the DSL author can transform the program in any way necessary before the program is passed back to the user.
 
 % A valid DSL program must type-check in three stages of the pipeline: before PreProcessing, during DSLVirtualization and after PostProcessing.
 % A well designed DSL should guarantee that a compilation error only occurs before PreProcessing or
-% program compiles in the before 
+% program compiles in the before
 
 The entry point to using Directembedding is now \texttt{DETransformer}.
 The design of the DETransformer is inspired by the \texttt{YYTransformer} in Yin-Yang~\autocite{jovanovic_yin-yang:_2014}.
@@ -48,14 +48,14 @@ Such language features include if-then-else statements, loops, and variable assi
 It is not possible to override the semantics of such statements in Scala without macros.
 
 Directembedding uses the language virtualization provided by the Yin-Yang~\autocite{jovanovic_yin-yang:_2014} framework.
-This transformation happens in the DSLVirtualization pass.
+This transformation happens in the \texttt{DSLVirtualization} pass.
 The DSL author is able to configure which language features to override through the \texttt{DslConfig} trait.
 The \texttt{LanguageVirtualizationSpec} shows 43 examples of how to use the language virtualization feature in Directembedding.
 % subsection Language virtualization (end)
 
 \subsection{Overriding predefined and third-party types} % (fold)
 \label{sub:Overridingpredefinedandthirdpartytypes}
-Directembedding supports the ability to override the behavior of predefined and third-party types.
+Directembedding supports the ability to override behavior of predefined and third-party types.
 Predefined types are types provided by standard Scala libraries, such as \texttt{Int} and \texttt{String}.
 Third-party types can be any types in a third-party library supported by the DSL.\
 
@@ -69,12 +69,12 @@ This search on types and finding matching symbols is currently implemented in a 
 \subsection{Improved error messages} % (fold)
 \label{sub:Improvederrormessages}
 Much effort has been put into making error messages produced by Directembedding helpful.
-These error messages broadly fall into two categories: DSL author and end user error messages.
+These error messages broadly fall into two categories: \emph{i)} DSL author and \emph{ii)} end user error messages.
 
 The error messages aimed at the DSL author are mostly meant to assist the author detect a DSL misconfiguration.
 For instance, the configuration is now provided through a trait type parameter.
 The trait determines the path from which all language virtualization and lift methods are implemented.
-If the \texttt{compile} method --- the receiver of DSL program after PostProcessing ---  is missing, Directembedding will fail with a compilation error indicating that the method is missing.
+If the \texttt{compile} method---the receiver of DSL program after PostProcessing---is missing, Directembedding will fail with a compilation error indicating that the method is missing.
 Another example is that if a reification annotation is used incorrectly, Directembedding will return a compilation error pointing to the misuse of the annotation.
 Finally, detailed logging of all the steps of Directembedding transform can be enabled for debugging purposes.
 
@@ -100,13 +100,14 @@ As will be covered in Section~\ref{sec:CaseStudy}, the slick-direct uses this an
 \label{sub:passThrough}
 The \texttt{@passThrough} annotation is useful when certain methods should not be reified in the ReificationTransformation.
 By default, any invoked method in a DSL program should be reified during ReificationTransformation.
-If a method is missing a reification annotation, the ReificationTransformation will return with a compilation error.\
+If a method is missing a reification annotation, the \texttt{ReificationTransformation} will return with a compilation error.\
 A DSL author can annotate a method with \texttt{@passThrough} if she wants the functionality of the method to be preserved from the shallow DSL.\
 Slick-direct uses this annotation in a few cases.
 
 % subsection passThrough (end)
 \subsubsection{customLifts} % (fold)
 \label{sub:customLifts}
+% Can't we solve this with implicit conversions? E.g., lift[T, U](t: T)(c: Converter[T, U]): U
 By default, all literal are lifted through a method with the following signature
 \lstinputlisting{code/lift.scala}
 where \texttt{Rep} is the supertype of all elements in the IR.\
@@ -116,6 +117,7 @@ For instance, the DSL author can provide a custom lift for values of type \textt
 Directembedding does not enforce that the return type of a custom lift methods is a subtype of \texttt{Rep}
 
 % subsection customLifts (end)
+% same here
 \subsubsection{liftIgnore} % (fold)
 \label{sub:liftIgnore}
 The \texttt{liftIgnore} configuration parameter allows the DSL author to list which literals should not be lifted during ReificationTransformation.
