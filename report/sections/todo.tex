@@ -3,10 +3,22 @@
 There are two areas which require more work.
 Firstly, it would be interesting to see more Directembedding case studies on other domains besides slick.
 In particular, it would be interesting to see how useful Directembedding is to design a deep EDSL from scratch.
-Secondly, although our initial experience with slick-direct is positive, we belive that the library requires more thorough evaluation to be considered as a viable alternative to the lifted embedding DSL.
+Secondly, although our initial experience with slick-direct is positive, we believe that the library requires more thorough evaluation to be considered as a viable alternative to the lifted embedding DSL.
+In particular, the following areas need a closer examination:
+\begin{itemize}
+    \item The \texttt{compile} method is overloaded with 5 implementations.
+    \item The type-provider for the \texttt{driver.Table} generates a class inside the query macro, which is redundant, slows down the compilation and introduces unnecessary complexity. It would be welcome to see a solution that uses the Slick's standard type providers.
+    \item The \texttt{ProjectionProcessing} class implements a unnecessarily amount of logic, which might be unnecessary with Slick's standard type providers.
+\end{itemize}
 
 \section{Conclusion} % (fold)
 \label{sec:Conclusion}
+This report presented work on \emph{Directembedding}, a Scala library to implement a thin user-friendly layer on top of an existing deeply embedded DSL.\
+We believe that much progress has been made with the library, in particular with regards to the library's architecture and features.
+Moreover, we are proud to show our results with slick-direct, which with a very small amount of code was able to support a large feature set of Slick.
+However, we consider that much work is left to be done to the see the real usefulness of Directembedding.
+These areas, which we believe need more focus, are listed in Section~\ref{sec:Future_research}.
+The source code for the Directembedding and slick-direct libraries are freely available on Github\footnote{\href{https://github.com/directembedding/directembedding}{https://github.com/directembedding/directembedding}}\footnote{\href{https://github.com/olafurpg/slick-direct}{https://github.com/olafurpg/slick-direct}}.
 
 % section Conclusion (end)
 
