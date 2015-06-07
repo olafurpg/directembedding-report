@@ -59,30 +59,70 @@ Directembedding supports the ability to override the behavior of predefined and 
 Predefined types are types provided by standard Scala libraries, such as \texttt{Int} and \texttt{String}.
 Third-party types can be any types in a third-party library supported by the DSL.\
 
-\begin{sloppypar}
-    Reification for overriden types works the same way as reification with any other types.
-    The \texttt{typeMap} argument to \texttt{DETransformer} tells Directembedding where to to look for reification annotations.
-    If Directembedding does not find metadata to an invoked symbol, Directembedding will look for annotations on types in the \texttt{typeMap}.
-    This search on types and finding matching symbols is currently implemented in a naïve way, and could be improved in future implementations.
-    \texttt{TypeOverridingSpec} provides 6 examples of how to use the type overriding feature in Directembedding.
-\end{sloppypar}
-
+Reification for overriden types works the same way as reification with any other types.
+The \texttt{typeMap} argument to \texttt{DETransformer} tells Directembedding where to to look for reification annotations.
+If Directembedding does not find metadata to an invoked symbol, Directembedding will look for annotations on types in the \texttt{typeMap}.
+This search on types and finding matching symbols is currently implemented in a naïve way, and could be improved in future implementations.
+\texttt{TypeOverridingSpec} provides 6 examples of how to use the type overriding feature in Directembedding.
 % subsection Overriding predefined and third-party types (end)
-
-\subsection{Configurable reification} % (fold)
-\label{sub:Configurablereification}
-
-% subsection Configurable reification (end)
 
 \subsection{Improved error messages} % (fold)
 \label{sub:Improvederrormessages}
+Much effort has been put into making error messages produced by Directembedding helpful.
+These error messages broadly fall into two categories: DSL author and end user error messages.
 
+The error messages aimed at the DSL author are mostly meant to assist the author detect a DSL misconfiguration.
+For instance, the configuration is now provided through a trait type parameter.
+The trait determines the path from which all language virtualization and lift methods are implemented.
+If the \texttt{compile} method --- the receiver of DSL program after PostProcessing ---  is missing, Directembedding will fail with a compilation error indicating that the method is missing.
+Another example is that if a reification annotation is used incorrectly, Directembedding will return a compilation error pointing to the misuse of the annotation.
+Finally, detailed logging of all the steps of Directembedding transform can be enabled for debugging purposes.
+
+The error messages aimed at the DSL user are mostly meant to surface incorrect use of the DSL in a user-friendly way.\
+Most importantly, if the user invokes a method that is missing a reification annotation, Directembedding will return a compilation error saying that the method is not supported in the DSL, pointing to the culprit invocation in the DSL program.
+Prior to this project, Directembedding threw a cryptic \texttt{EmptyIteratorException} in the same situation.
 % subsection Improved error messages (end)
 
-\begin{itemize}
-    \item Explain \texttt{reifyAs} annotations, provide examples.
-    \item Explain pipeline.
-\end{itemize}
+\subsection{Configurable reification} % (fold)
+\label{sub:Configurablereification}
+Many of the Directembedding features are now configurable by the DSL author.
+The DSL author has increased control over how the reification is performed through new reification annotations beyond the original \texttt{@reifyAs} annotation.
+Moreover, the DSL author has now fine-grained control over how literals are lifted into deep IR.\
+For more details on the following configuration options, please refer to the Directembedding example DSLs and documentation.
+
+\subsubsection{@reifyAsInvoked} % (fold)
+\label{sub:reifyAsInvoked}
+The \texttt{@reifyAsInvoked} annotation is useful to create a front-end on top an existing deep EDSL.\
+As will be covered in Section~\ref{sec:CaseStudy}, the slick-direct uses this annotation to great extent.
+% subsection reifyAsInvoked (end)
+
+\subsubsection{@passThrough} % (fold)
+\label{sub:passThrough}
+The \texttt{@passThrough} annotation is useful when certain methods should not be reified in the ReificationTransformation.
+By default, any invoked method in a DSL program should be reified during ReificationTransformation.
+If a method is missing a reification annotation, the ReificationTransformation will return with a compilation error.\
+A DSL author can annotate a method with \texttt{@passThrough} if she wants the functionality of the method to be preserved from the shallow DSL.\
+Slick-direct uses this annotation in a few cases.
+
+% subsection passThrough (end)
+\subsubsection{customLifts} % (fold)
+\label{sub:customLifts}
+By default, all literal are lifted through a method with the following signature
+\lstinputlisting{code/lift.scala}
+where \texttt{Rep} is the supertype of all elements in the IR.\
+The issue with default configuration is that it ignores the hierarchy of the IR, all literals will have the type \texttt{Rep} although they may be lifted into a subtype of \texttt{Rep}.
+The \texttt{customLifts} parameter to \texttt{DETransformer} alleviates this issue by giving the DSL author fine grained control over which types are lifted into which IR types.
+For instance, the DSL author can provide a custom lift for values of type \texttt{Int} and another lift method for values of type \texttt{String}.
+Directembedding does not enforce that the return type of a custom lift methods is a subtype of \texttt{Rep}
+
+% subsection customLifts (end)
+\subsubsection{liftIgnore} % (fold)
+\label{sub:liftIgnore}
+The \texttt{liftIgnore} configuration parameter allows the DSL author to list which literals should not be lifted during ReificationTransformation.
+This can be useful if certain literals are introduced in the PreProcessing step which should not be lifted.
+% subsection liftIgnore (end)
+
+% subsection C (end)
 
 
 % section Directembedding (end)
