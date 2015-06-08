@@ -70,7 +70,12 @@ This search on types and finding matching symbols is currently implemented in a 
 \subsection{Improved error messages} % (fold)
 \label{sub:Improvederrormessages}
 Much effort has been put into making error messages produced by Directembedding helpful.
-These error messages broadly fall into two categories: \emph{i)} DSL author and \emph{ii)} end user error messages.
+These error messages broadly fall into two categories: 
+\begin{inparaenum}[i)]
+    \item DSL author and
+    \item end user error messages.
+\end{inparaenum}
+
 
 The error messages aimed at the DSL author are mostly meant to assist the author detect a DSL misconfiguration.
 For instance, the configuration is now provided through a trait type parameter.
@@ -90,6 +95,7 @@ Many of the Directembedding features are now configurable by the DSL author.
 The DSL author has increased control over how the reification is performed through new reification annotations beyond the original \texttt{@reifyAs} annotation.
 Moreover, the DSL author has now fine-grained control over how literals are lifted into deep IR.\
 For more details on the following configuration options, please refer to the Directembedding example DSLs and documentation.
+
 
 \subsubsection{@reifyAsInvoked} % (fold)
 \label{sub:reifyAsInvoked}
