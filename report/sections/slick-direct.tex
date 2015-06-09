@@ -30,7 +30,7 @@ To create a query with the lifted embedding, a Slick user must in one way or ano
 \end{figure}
 The purpose of the lifted embedding API is to create an abstract syntax tree (AST) of type \texttt{slick.ast.Node}, which is then passed onto the query optimization engine of Slick.
 In the next few paragraphs, we will follow an example to see how a query inside the lifted embedding is created from the point of view of a Slick users.
-The \texttt{Node} API will not be discussed until Section~\ref{sub:alternatives}.
+% The \texttt{Node} API will not be discussed until Section~\ref{sub:alternatives}.
 The following example is made up of simple database of users and cars owned our users and is split into four steps.
 Observe that some details such as database drivers are left out for clarity.
 % Figure~\ref{fig:node} shows the type hierarchy of \texttt{Node}.
@@ -41,12 +41,12 @@ Observe that some details such as database drivers are left out for clarity.
 % \end{figure}
 
 
-First, we define our Scala case classes for our \texttt{User} and \texttt{Car} objects.
-\lstinputlisting[caption=Original case classes]{code/oo.scala}
+Listing~\ref{lst:oo} shows the definitions of our basic Scala classes: \texttt{User} and \texttt{Car}.
+\lstinputlisting[label={lst:oo}, float, caption=Original case classes]{code/oo.scala}
 These classes will be the values which we want to insert into and fetch from our database.
 
-Second, to provide necessary metadata to query on our user and car objects, we define a \texttt{Table[T]}.
-\lstinputlisting[caption=\texttt{Table[T]} definition]{code/table.scala}
+Listing~\ref{lst:table} shows our \texttt{Table[T]} definitions, where we provide necessary metadata to query on our user and car objects.
+\lstinputlisting[label={lst:table}, float, caption=\texttt{Table[T]} definition, float]{code/table.scala}
 Observe that the names of the members in our standard user and car objects are repeated at least four times:
 \begin{inparaenum}[i)]
     \item in the case class definition,
@@ -59,15 +59,15 @@ The benefit to this table definition is that it gives great flexibility to the u
 The downside is that the table definition forces a lot of boilerplate onto users --- violates DRY --- and may be likely to introduce bugs in the code.
 To alleviate this issue, Slick provides a library to generate these table definitions from a database schema.
 
-Third, to write queries we create \texttt{TableQuery} objects.
-\lstinputlisting[caption=\texttt{TableQuery[T]} definition]{code/tablequery.scala}
-Queries are written with a similar syntax as Scala collections are operated.
-The following examples show a handful of Slick queries and their corresponding translations to (simplified) SQL.\
-\lstinputlisting[caption=Slick queries]{code/example-queries.scala}
+Listing~\ref{lst:tablequery} shows how we create \texttt{TableQuery} objects, which we use to write queries.
+\lstinputlisting[label=lst:tablequery, float, caption=\texttt{TableQuery[T]} definition]{code/tablequery.scala}
+Queries are written with a similar syntax as with Scala collections.
+Listing~\ref{lst:query} shows several examples of Slick queries and their corresponding translations to (simplified) SQL.\
+\lstinputlisting[label=lst:query, float, caption=Slick queries]{code/example-queries.scala}\label{}
 Take a moment to appreciate some of the benefits to writing queries like this:
 Queries can be type-checked;
 IDEs can provide auto-completion to the end user; and
-if a user knows how to operate on Scala collections the user can write SQL.
+if a user knows how to operate on Scala collections the user can write SQL.\
 Once we invoke a \texttt{map} or \texttt{filter} operation on a \texttt{TableQuery[T]}, we get a value of type \texttt{Query[E, T, C]} where in our example
 \begin{inparaenum}[i)]
 \item \texttt{E} will be \texttt{Users} and \texttt{Cars},
@@ -75,7 +75,7 @@ Once we invoke a \texttt{map} or \texttt{filter} operation on a \texttt{TableQue
 \item \texttt{C} will typically be the collections container \texttt{Seq[T]}.
 \end{inparaenum}
 
-Fourth, we run our queries on a database object.
+Finally, we run our queries on a database object.
 In Slick 3.0, the argument supplied to the database object is of type \texttt{DBIOAction[T]} --- which can be created from a \texttt{slick.ast.Node} --- and the database returns a values of type \texttt{T}, which will be \texttt{User} and \texttt{Car} in our case.
 Observe that the database object does not work with values of the lifted embedding, that is \texttt{slick.lifted.Rep[T]}.
 The lifted embedding is only required to provide the metadata to create a \texttt{slick.ast.Node}.
@@ -85,7 +85,7 @@ The lifted embedding is only required to provide the metadata to create a \textt
 The value proposition of slick-direct is twofold.
 Firstly, in slick-direct queries are written on the original Scala case classes --- \texttt{User} and \texttt{Car} in our example --- and, thus, obviates the need for the \texttt{Table[T]} in the second step.
 Secondly, because queries are written on the original scala case classes, type signatures in the Query API are simplified.
-Besides these two differences, writing queries in the direct embedding work close to the same as in the lifted embedding.
+Besides these two differences, writing queries in the direct embedding is similar to writing queries in the lifted embedding.
 
 Slick-direct eliminates the need for the \texttt{Table[T]} by extracting necessary metadata from the original case classes.
 In slick-direct, a class of type \texttt{Table[T]} is generated during the \texttt{PreProcessing} step described in Section~\ref{sub:Architecture}.
@@ -100,22 +100,26 @@ Finally, users avoid the confusion between the basic case classes such as \textt
 The second benefit to slick-direct is that the type signatures in the Query API are simplified.
 Herein, we highlight a few major differences between the two querying APIs.
 In all examples, assume the type of \texttt{this} to be \texttt{lifted.Query[E, T, \_]} for \texttt{direct.Query[T, \_]}, respectively.
-\lstinputlisting[caption=Map API]{code/map.scala}
+Listing~\ref{lst:map} shows the type signatures for the \texttt{map} operation.
+\lstinputlisting[label=lst:map, float, caption=Map API]{code/map.scala}
 In order to guarantee that \texttt{f} produces a value that can be persisted into a database, \texttt{lifted.Query} adds an implicit shape parameter on the type of \texttt{F}.
 Slick-direct eliminates the need for this shape parameter by restricting the values that can be introduces in it's shallow DSL.
 If the user introduces an illegal value with \texttt{f}, slick-direct will return a compilation error that the value is not supported in the DSL.
 However, if the value produced is valid in the shallow DSL but does not have an implicit shape, the user will receive an unexpected implicit missing error message.
 
-\lstinputlisting[caption=Filter API]{code/filter.scala}
+Listing~\ref{lst:filter} shows the type signatures of the \texttt{filter} operation.
+\lstinputlisting[label=lst:filter, float, caption=Filter API]{code/filter.scala}
 In order to guarantee that \texttt{f} produces a value that can be a boolean condition, \texttt{lifted.Query} adds an implicit \texttt{CanBeQueryCondition} parameter on the type of \texttt{T}.
 Slick-direct eliminates the need for this implicit parameter by forcing the method to be of type \texttt{T => Boolean}.
 The issue with this elimination is that query conditions on wrapped column types such as \texttt{Option[Boolean]}cannot be supported.
 
-\lstinputlisting[caption=Join API]{code/join.scala}
+Listing~\ref{lst:join} shows the type signatures of the \texttt{join} operation.
+\lstinputlisting[label=lst:join, float, caption=Join API]{code/join.scala}
 This example may be a bit unfair against \texttt{lifted.Query}, but shows that type signatures in the lifted embedding can become unwieldy complicated.
 The type signature of the equivalent method in slick-direct is undeniably more user-friendly.
 
-\lstinputlisting[caption=Column extension methods API]{code/overridden-types.scala}
+Listing~\ref{lst:types} shows the type signatures operations on column types.
+\lstinputlisting[label=lst:types, float, caption=Column extension methods API]{code/overridden-types.scala}
 A big benefit to the slick-direct API is that operations on column types such as equality of types and concatenation of strings is done with \texttt{==} and \texttt{+}, respectively.
 As this example exhibits, the lifted embedding requires queries to use the less widely adopted syntax \texttt{===} and \texttt{++} due to constraints of the Scala language.
 In fact, using \texttt{==} and \texttt{+} in the lifted embedding will not result in a compilation error but unexpected behavior instead.

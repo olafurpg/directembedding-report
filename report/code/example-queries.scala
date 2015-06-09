@@ -12,8 +12,8 @@ for {
   car <- cars if car.ownerId  === user.id
 } yield user.name ++ " drives a " ++ car.name
 // select concat(u.name, " drives a ", c.name)
-// from User u inner join Car c
-// on u.id = c.id
+// from User u, Car c
+// where u.id = c.id
 
 for {
   (u, c) <- user leftJoin cars on (_.ownerId === _.id)
