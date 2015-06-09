@@ -157,7 +157,13 @@ The library implements one macro to reify values in a shallow Query API.\
 However, this second attempt produced values in a shadow embedding that operates on values of type \texttt{lifted.Query} at runtime.
 The main difference between our case study and this attempt is that Directembedding obviates the need for the shadow embedding by transforming in one step the values in the shallow embedding into the deep embedding.
 
-\emph{slick-macros}~\autocite{ebiznext_slick-macros_2014} is a Scala library that generates the 
+\emph{slick-macros}~\autocite{ebiznext_slick-macros_2014} is a Scala library to generate boilerplate definitions in the lifted embedding
+The library accomplishes this using macro annotations.\
+slick-macros offers an impressive amount of customization options to generate \texttt{Table[T]} definitions.
+The library even has an experimental DSL to configure the database model.
+However, the library still falls short with two regards in comparison with slick-direct.
+Firstly, macro annotations need to be used in a separate compilation unit from where they are invoked.
+Secondly, slick-macros still forces users to write queries on the liffted embedding Query API, which have complicated type signatures as we have seen in listings above.
 
 
 
