@@ -119,6 +119,7 @@ EDSLs largely fall into two categories:
         In Scala, this could be a type such as \texttt{Column[Int]} or \texttt{Column[String]} for a database DSL.\
         The benefit of deep EDSLs is that they are convenient for the DSL author.
         The DSL author has full control over the IR, and can therefore give any meaning to programs which invoke operations on the IR.\
+        Moreover, deeply embedded DSLs have shown promising results for domain-specific optimizations~\autocite{rompf_optimizing_2013,rompf_lightweight_2012} and multi-target code generation~\autocite{brown_heterogeneous_2011}.
         The downside to deep EDSLs is that they can have a steep learning curve for end users.
         The types in the IR and their behavior may be unfamiliar to the programmers even though they may have some experience with the host language.
         In a way, deep EDSLs are not too different from ordinary libraries in a general purpose programming language.
@@ -126,6 +127,7 @@ EDSLs largely fall into two categories:
 There is a clear struggle between DSL users and authors: the users prefer shallow EDSLs while the authors prefer deep EDSLs.
 Directembedding aims to please both parties.
 The DSL author can conveniently create her deeply embedded DSL and then use Directembedding to provide a shallow EDSL-like interface for end users.
+For an in-depth discussion on combining shallow and deep EDSLs, see~\citeauthor{svenningsson_combining_2013} (2013)~\autocite{svenningsson_combining_2013}.
 
 The main contributions presented in this report are the following:
 \begin{itemize}
@@ -143,7 +145,7 @@ The main contributions presented in this report are the following:
         Slick-direct supports query operations such as \texttt{map}, \texttt{flatMap}, \texttt{filter}, and \texttt{join} with greatly simplified type signatures compared to the lifted embedding in Slick.
         This work is covered in Section~\ref{sec:CaseStudy}.
 \end{itemize}
-
+Throughout the paper we assume familiarity with the basics of the Scala Programming Language~\autocite{odersky_scala_2004}.
 
 % section Introduction (end)
 \input{sections/directembedding}

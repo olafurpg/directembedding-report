@@ -8,7 +8,7 @@ The fact that the book is close to 300 pages may also indicate that the library 
 
 We chose to evaluate Directembedding by implementing a front-end for Slick for a few reasons.
 Firstly, Slick is a widely used library in the industry.
-Secondly, the lifted embedding API is quite elaborate and uses many advanced features of the Scala type system.
+Secondly, the lifted embedding API is quite elaborate and makes extensive of many advanced features of the Scala type system, such as \emph{lifted embedding}~\autocite{oliveira_type_2010}.
 Thirdly, there exists a lot of related work on direct embedding for Slick.
 
 In this case study, we compare in detail the lifted embedding with our implementation of the direct embedding.
@@ -144,7 +144,7 @@ We encourage the reader to look at the test suites for a more in-depth compariso
 \subsection{Related work} % (fold)
 \label{sub:Relatedwork}
 A lot of work has been made to create a simplified Query API to Slick.
-Most of this work relies on macros, like Directembedding.
+Most of this work relies on Scala macros~\autocite{burmako_scala_2013}, like Directembedding.
 We cover a few of these attempts to see how they differ from slick-direct.
 
 \begin{sloppypar}

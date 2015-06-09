@@ -25,7 +25,7 @@ In this pass, the metadata attached to the shallow embedding is used to reify th
 % program compiles in the before
 
 The entry point to using Directembedding is now \texttt{DETransformer}.
-The design of the DETransformer is inspired by the \texttt{YYTransformer} in Yin-Yang~\autocite{jovanovic_yin-yang:_2014}.
+The design of the DETransformer is inspired by the \texttt{YYTransformer} in Yin-Yang~\autocite{jovanovic_yin-yang:_2014}, and uses \emph{mixin composition}~\autocite{odersky_scalable_2005} to compose a series of transformation stages.
 An example Directembedding DSL is provided the \texttt{example} package object.
 
 \begin{figure}
@@ -70,7 +70,7 @@ This search on types and finding matching symbols is currently implemented in a 
 \subsection{Improved error messages} % (fold)
 \label{sub:Improvederrormessages}
 Much effort has been put into making error messages produced by Directembedding helpful.
-These error messages broadly fall into two categories: 
+These error messages broadly fall into two categories:
 \begin{inparaenum}[i)]
     \item DSL author and
     \item end user error messages.
@@ -96,23 +96,39 @@ The DSL author has increased control over how the reification is performed throu
 Moreover, the DSL author has now fine-grained control over how literals are lifted into deep IR.\
 For more details on the following configuration options, please refer to the Directembedding example DSLs and documentation.
 
+\subsubsection{\texttt{reifyAs}} % (fold)
+\label{sub:reifyAs}
+The \texttt{@reifyAs} annotation is useful to move the invocation of a method in the shallow EDSL into any method in the deep EDSL.
+This approach is inspired by related work on \emph{finally-tagless, polymorphic embedding}~\autocite{carette_finally_2009,hofer_polymorphic_2008}.
+Listing~\ref{lst:reifyAs} shows an example usage of the \texttt{@reifyAs} annotation.
+\lstinputlisting[label=lst:reifyAs, float, caption=\texttt{@reifyAs} example]{code/reifyAs.scala}
+As seen in the example, the DSL author attaches the deep method as an argument to the \texttt{@reifyAs} annotation.
+If the argument is missing, Directembedding will fail with a compilation error.
 
-\subsubsection{@reifyAsInvoked} % (fold)
+\subsubsection{\texttt{reifyAsInvoked}} % (fold)
 \label{sub:reifyAsInvoked}
-The \texttt{@reifyAsInvoked} annotation is useful to create a front-end on top an existing deep EDSL.\
-As will be covered in Section~\ref{sec:CaseStudy}, the slick-direct uses this annotation to great extent.
+The \texttt{@reifyAsInvoked} annotation is useful to preserve the invocation a front-end on top an existing deep EDSL.\
+Instead of invoking a static method as \texttt{@reifyAs}, the \texttt{@reifyAsInvoked} preserves the shallow embedding invocation order.
+Listing~\ref{lst:reifyAsInvoked} shows an example usage of the \texttt{@reifyAsInvoked} annotation.
+\lstinputlisting[label=lst:reifyAsInvoked, float, caption=\texttt{@reifyAsInvoked} example]{code/reifyAsInvoked.scala}
+The deed query compiles only since the underlying \texttt{lifted.Query} has a matching \texttt{take} method.
+The use of \texttt{@reifyAsInvoked} is therefore only encouraged in cases like slick-direct, where there is a close correspondance between the shallow EDSL and deep EDSL.
 % subsection reifyAsInvoked (end)
 
-\subsubsection{@passThrough} % (fold)
+\subsubsection{\texttt{passThrough}} % (fold)
 \label{sub:passThrough}
-The \texttt{@passThrough} annotation is useful when certain methods should not be reified in the ReificationTransformation.
+The \texttt{@passThrough} annotation is useful to preserve values in the shallow DSL program.
 By default, any invoked method in a DSL program should be reified during ReificationTransformation.
 If a method is missing a reification annotation, the \texttt{ReificationTransformation} will return with a compilation error.\
-A DSL author can annotate a method with \texttt{@passThrough} if she wants the functionality of the method to be preserved from the shallow DSL.\
-Slick-direct uses this annotation in a few cases.
+Methods annotated with \texttt{@passThrough} skip reification in the ReificationTransformation.
+Listing~\ref{lst:passThrough} shows an example usage of the \texttt{@passThrough} annotation.
+\lstinputlisting[label=lst:passThrough, float, caption=\texttt{@passThrough} example]{code/passThrough.scala}
+The example exhibits a subtle yet important difference between \texttt{@passThrough} and \texttt{@reifyAsInvoked}, the former will stop the reification at the invocation point and while the latter will recursively reify the arguments to the invoked method.
+A careful observer may notice that the example may fail to compile, since the argument to the lifted query mustbe a lifted value.
+For this reason, the use of \texttt{@passThrough} should only be used with great care.
 
 % subsection passThrough (end)
-\subsubsection{customLifts} % (fold)
+\subsubsection{\texttt{customLifts}} % (fold)
 \label{sub:customLifts}
 % Can't we solve this with implicit conversions? E.g., lift[T, U](t: T)(c: Converter[T, U]): U
 By default, all literal are lifted through a method with the following signature
@@ -125,7 +141,7 @@ Directembedding does not enforce that the return type of a custom lift methods i
 
 % subsection customLifts (end)
 % same here
-\subsubsection{liftIgnore} % (fold)
+\subsubsection{\texttt{liftIgnore}} % (fold)
 \label{sub:liftIgnore}
 The \texttt{liftIgnore} configuration parameter allows the DSL author to list which literals should not be lifted during ReificationTransformation.
 This can be useful if certain literals are introduced in the PreProcessing step which should not be lifted.
