@@ -3,7 +3,7 @@
 def take(i: Long): Query[T, C] = ???
 // Shallow query.
 query {
-  Query.take(1)
+  query.take(1)
 }
 // Deep query.
-lift(Query).take(lift(1))
+lift(query).take(lift(1))

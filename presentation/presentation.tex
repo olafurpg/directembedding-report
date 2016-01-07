@@ -150,6 +150,15 @@
     \end{center}
 \end{frame}
 
+\begin{frame}[fragile]
+    \frametitle{Motivation}
+    \begin{block}{Problem statement}
+        \begin{itemize}
+            \item Enable DSL authors to write feature rich deeply embedded DSL
+            \item Make it effortless to provide a shallowly embedded interface for DSL users
+        \end{itemize}
+    \end{block}
+\end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % 2. Directembedding
@@ -167,6 +176,34 @@
         \includegraphics[width=\textwidth]{img/Architecture.pdf}
     \end{center}
 \end{frame}
+
+\subsection{Configuration} % (fold)
+\label{sub:Directembeddingconfiguration}
+\begin{frame}[fragile]
+    \frametitle{Configuration}
+    \framesubtitle{@reifyAs}
+    \begin{block}{}
+        \lstinputlisting{../report/code/reifyAs.scala}
+    \end{block}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{Configuration}
+    \framesubtitle{@reifyAsInvoked}
+    \begin{block}{}
+        \lstinputlisting{../report/code/reifyAsInvoked.scala}
+    \end{block}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{Configuration}
+    \framesubtitle{@passThrough}
+    \begin{block}{}
+        \lstinputlisting{../report/code/passThrough.scala}
+    \end{block}
+\end{frame}
+% subsection configuration (end)
+
 
 % subsection Architecture (end)
 
@@ -203,33 +240,6 @@
 \end{frame}
 
 % subsection Improved error messages (end)
-
-\subsection{Configuration} % (fold)
-\label{sub:Directembeddingconfiguration}
-\begin{frame}[fragile]
-    \frametitle{Configuration}
-    \framesubtitle{@reifyAs}
-    \begin{block}{}
-        \lstinputlisting{../report/code/reifyAs.scala}
-    \end{block}
-\end{frame}
-
-\begin{frame}[fragile]
-    \frametitle{Configuration}
-    \framesubtitle{@reifyAsInvoked}
-    \begin{block}{}
-        \lstinputlisting{../report/code/reifyAsInvoked.scala}
-    \end{block}
-\end{frame}
-
-\begin{frame}[fragile]
-    \frametitle{Configuration}
-    \framesubtitle{@passThrough}
-    \begin{block}{}
-        \lstinputlisting{../report/code/passThrough.scala}
-    \end{block}
-\end{frame}
-% subsection configuration (end)
 
 
 
@@ -354,7 +364,7 @@ def * = ProvenShape.proveShapeOf(
     \end{block}
     \begin{block}{The not so good parts}
         \begin{enumerate}
-            \item Challenging for the DSL author
+            \item Boilerplate/code duplication
         \end{enumerate}
     \end{block}
     \only<1> {
